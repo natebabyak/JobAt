@@ -1,4 +1,5 @@
 <script>
+	import Footer from '$lib/components/layout/footer.svelte';
 	import Header from '$lib/components/layout/header.svelte';
 </script>
 
@@ -15,3 +16,4 @@
 <p class="text-center text-lg font-medium text-balance">
 	Join now and stay on top of your job search.
 </p>
+<Footer />
