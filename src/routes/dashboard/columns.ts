@@ -15,15 +15,15 @@ export const Application = z.object({
 
 export const columns: ColumnDef<z.infer<typeof Application>>[] = [
 	{
+		accessorKey: 'position',
+		header: 'Position'
+	},
+	{
+		accessorKey: 'company',
+		header: 'Company'
+	},
+	{
 		accessorKey: 'status',
 		header: 'Status'
-	},
-	{
-		accessorKey: 'email',
-		header: 'Email'
-	},
-	{
-		accessorKey: 'amount',
-		header: 'Amount'
 	}
 ];
