@@ -4,5 +4,8 @@
 </script>
 
 <Header />
-<h1>privacy</h1>
+<main class="pt-[68px]">
+	<h1>Privacy</h1>
+	<p>This is a cool sentence about privacy.</p>
+</main>
 <Footer />

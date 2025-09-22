@@ -1,17 +1,17 @@
 <script lang="ts" generics="TData, TValue">
+	import { Button } from '$lib/components/ui/button/index.js';
 	import {
 		type ColumnDef,
 		type ColumnFiltersState,
 		getCoreRowModel,
-		getExpandedRowModel,
 		getFilteredRowModel,
 		getPaginationRowModel,
 		getSortedRowModel,
 		type PaginationState,
+		type RowSelectionState,
 		type SortingState,
 		type VisibilityState
 	} from '@tanstack/table-core';
-	import { Button } from '$lib/components/ui/button/index.js';
 	import { createSvelteTable, FlexRender } from '$lib/components/ui/data-table/index.js';
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu/index.js';
 	import { Input } from '$lib/components/ui/input/index.js';
@@ -27,6 +27,7 @@
 	let columnFilters = $state<ColumnFiltersState>([]);
 	let columnVisibility = $state<VisibilityState>({});
 	let pagination = $state<PaginationState>({ pageIndex: 0, pageSize: 10 });
+	let rowSelection = $state<RowSelectionState>({});
 	let sorting = $state<SortingState>([]);
 
 	const table = createSvelteTable({
@@ -34,24 +35,27 @@
 			return data;
 		},
 		columns,
+		state: {
+			get columnFilters() {
+				return columnFilters;
+			},
+			get columnVisibility() {
+				return columnVisibility;
+			},
+			get pagination() {
+				return pagination;
+			},
+			get rowSelection() {
+				return rowSelection;
+			},
+			get sorting() {
+				return sorting;
+			}
+		},
 		getCoreRowModel: getCoreRowModel(),
+		getFilteredRowModel: getFilteredRowModel(),
 		getPaginationRowModel: getPaginationRowModel(),
 		getSortedRowModel: getSortedRowModel(),
-		getFilteredRowModel: getFilteredRowModel(),
-		onPaginationChange: (updater) => {
-			if (typeof updater === 'function') {
-				pagination = updater(pagination);
-			} else {
-				pagination = updater;
-			}
-		},
-		onSortingChange: (updater) => {
-			if (typeof updater === 'function') {
-				sorting = updater(sorting);
-			} else {
-				sorting = updater;
-			}
-		},
 		onColumnFiltersChange: (updater) => {
 			if (typeof updater === 'function') {
 				columnFilters = updater(columnFilters);
@@ -66,18 +70,25 @@
 				columnVisibility = updater;
 			}
 		},
-		state: {
-			get pagination() {
-				return pagination;
-			},
-			get sorting() {
-				return sorting;
-			},
-			get columnFilters() {
-				return columnFilters;
-			},
-			get columnVisibility() {
-				return columnVisibility;
+		onPaginationChange: (updater) => {
+			if (typeof updater === 'function') {
+				pagination = updater(pagination);
+			} else {
+				pagination = updater;
+			}
+		},
+		onRowSelectionChange: (updater) => {
+			if (typeof updater === 'function') {
+				rowSelection = updater(rowSelection);
+			} else {
+				rowSelection = updater;
+			}
+		},
+		onSortingChange: (updater) => {
+			if (typeof updater === 'function') {
+				sorting = updater(sorting);
+			} else {
+				sorting = updater;
 			}
 		}
 	});

@@ -1,34 +1,76 @@
 <script lang="ts">
-	import { enhance } from '$app/forms';
-	import type { ActionData } from './$types';
+	import Github from '$lib/components/icons/github.svelte';
+	import Google from '$lib/components/icons/google.svelte';
+	import { Button } from '$lib/components/ui/button/index.js';
+	import * as Card from '$lib/components/ui/card/index.js';
+	import { Separator } from '$lib/components/ui/separator/index.js';
+	import type { PageProps } from './$types';
+	import { superForm } from 'sveltekit-superforms';
+	import { zod4 } from 'sveltekit-superforms/adapters';
+	import * as Form from '$lib/components/ui/form/index.js';
+	import { Input } from '$lib/components/ui/input/index.js';
+	import { schema } from './schema';
+	import { AtSign } from '@lucide/svelte';
 
-	let { form }: { form: ActionData } = $props();
+	const { data }: PageProps = $props();
+
+	const form = superForm(data.form, {
+		validators: zod4(schema)
+	});
+
+	const { form: formData, enhance } = form;
 </script>
 
-<h1>Login/Register</h1>
-<form method="post" action="?/login" use:enhance>
-	<label>
-		Username
-		<input
-			name="username"
-			class="mt-1 rounded-md border border-gray-300 bg-white px-3 py-2 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none"
-		/>
-	</label>
-	<label>
-		Password
-		<input
-			type="password"
-			name="password"
-			class="mt-1 rounded-md border border-gray-300 bg-white px-3 py-2 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none"
-		/>
-	</label>
-	<button class="rounded-md bg-blue-600 px-4 py-2 text-white transition hover:bg-blue-700"
-		>Login</button
-	>
-	<button
-		formaction="?/register"
-		class="rounded-md bg-blue-600 px-4 py-2 text-white transition hover:bg-blue-700"
-		>Register</button
-	>
-</form>
-<p style="color: red">{form?.message ?? ''}</p>
+<Card.Root class="mx-auto max-w-sm">
+	<Card.Header>
+		<Card.Title class="text-center">Sign in to JobAt</Card.Title>
+	</Card.Header>
+	<Card.Content class="grid gap-4">
+		<form method="POST" use:enhance class="grid gap-2">
+			<Form.Field {form} name="email">
+				<Form.Control>
+					<Form.Label>Email</Form.Label>
+					<Input bind:value={$formData.email} placeholder="example@domain.com" />
+				</Form.Control>
+				<Form.FieldErrors />
+			</Form.Field>
+			<Form.Field {form} name="password">
+				<Form.Control>
+					<div class="flex justify-between">
+						<Form.Label>Password</Form.Label>
+						<a href="/" class="text-xs text-muted-foreground underline-offset-4 hover:underline">
+							Forgot password?
+						</a>
+					</div>
+					<Input
+						bind:value={$formData.password}
+						placeholder="&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;"
+					/>
+				</Form.Control>
+				<Form.FieldErrors />
+			</Form.Field>
+			<Form.Button>Sign in</Form.Button>
+		</form>
+		<div class="relative">
+			<Separator />
+			<span
+				class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-popover px-2 text-xs font-medium text-muted-foreground"
+			>
+				OR
+			</span>
+		</div>
+		<div class="grid grid-cols-2 gap-2">
+			<Button variant="outline">
+				<Github />
+				GitHub
+			</Button>
+			<Button variant="outline">
+				<Google />
+				Google
+			</Button>
+		</div>
+		<span class="text-center text-xs">
+			Don&apos;t have an account? <a href="/sign-up">Sign up</a></span
+		>
+	</Card.Content>
+</Card.Root>

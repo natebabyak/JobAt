@@ -4,5 +4,8 @@
 </script>
 
 <Header />
-<h1>security</h1>
+<main class="pt-[68px]">
+	<h1>Security</h1>
+	<p>This is a cool sentence about security.</p>
+</main>
 <Footer />
