@@ -21,56 +21,63 @@
 	const { form: formData, enhance } = form;
 </script>
 
-<Card.Root class="mx-auto max-w-sm">
-	<Card.Header>
-		<Card.Title class="text-center">Sign in to JobAt</Card.Title>
-	</Card.Header>
-	<Card.Content class="grid gap-4">
-		<form method="POST" use:enhance class="grid gap-2">
-			<Form.Field {form} name="email">
-				<Form.Control>
-					<Form.Label>Email</Form.Label>
-					<Input bind:value={$formData.email} placeholder="example@domain.com" />
-				</Form.Control>
-				<Form.FieldErrors />
-			</Form.Field>
-			<Form.Field {form} name="password">
-				<Form.Control>
-					<div class="flex justify-between">
-						<Form.Label>Password</Form.Label>
-						<a href="/" class="text-xs text-muted-foreground underline-offset-4 hover:underline">
-							Forgot password?
-						</a>
-					</div>
-					<Input
-						bind:value={$formData.password}
-						placeholder="&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;"
-					/>
-				</Form.Control>
-				<Form.FieldErrors />
-			</Form.Field>
-			<Form.Button>Sign in</Form.Button>
-		</form>
-		<div class="relative">
-			<Separator />
-			<span
-				class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-popover px-2 text-xs font-medium text-muted-foreground"
-			>
-				OR
+<main class="flex h-screen items-center">
+	<Card.Root class="mx-auto w-full max-w-sm">
+		<Card.Header class="grid gap-4 text-center">
+			<AtSign class="mx-auto" />
+			<Card.Title>Sign in to JobAt</Card.Title>
+		</Card.Header>
+		<Card.Content class="grid gap-4">
+			<form method="POST" use:enhance class="grid gap-2">
+				<Form.Field {form} name="email">
+					<Form.Control>
+						<Form.Label>Email address</Form.Label>
+						<Input bind:value={$formData.email} placeholder="example@domain.com" />
+					</Form.Control>
+					<Form.FieldErrors />
+				</Form.Field>
+				<Form.Field {form} name="password">
+					<Form.Control>
+						<div class="flex justify-between">
+							<Form.Label>Password</Form.Label>
+							<a href="/" class="text-xs text-muted-foreground underline-offset-4 hover:underline">
+								Forgot password?
+							</a>
+						</div>
+						<Input
+							bind:value={$formData.password}
+							placeholder="&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;"
+						/>
+					</Form.Control>
+					<Form.FieldErrors />
+				</Form.Field>
+				<Form.Button>Sign in</Form.Button>
+			</form>
+			<div class="relative">
+				<Separator />
+				<span
+					class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-popover px-2 text-xs font-medium text-muted-foreground"
+				>
+					OR
+				</span>
+			</div>
+			<div class="grid grid-cols-2 gap-2">
+				<Button variant="outline">
+					<Github />
+					GitHub
+				</Button>
+				<Button variant="outline">
+					<Google />
+					Google
+				</Button>
+			</div>
+		</Card.Content>
+		<Card.Footer>
+			<span class="w-full text-center text-xs text-muted-foreground">
+				Don&apos;t have an account? <a href="/sign-up" class="underline-offset-4 hover:underline"
+					>Sign up</a
+				>
 			</span>
-		</div>
-		<div class="grid grid-cols-2 gap-2">
-			<Button variant="outline">
-				<Github />
-				GitHub
-			</Button>
-			<Button variant="outline">
-				<Google />
-				Google
-			</Button>
-		</div>
-		<span class="text-center text-xs">
-			Don&apos;t have an account? <a href="/sign-up">Sign up</a></span
-		>
-	</Card.Content>
-</Card.Root>
+		</Card.Footer>
+	</Card.Root>
+</main>
