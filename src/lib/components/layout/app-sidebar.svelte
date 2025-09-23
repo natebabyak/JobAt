@@ -1,12 +1,18 @@
 <script lang="ts">
-	import CalendarIcon from '@lucide/svelte/icons/calendar';
-	import HouseIcon from '@lucide/svelte/icons/house';
-	import InboxIcon from '@lucide/svelte/icons/inbox';
-	import SearchIcon from '@lucide/svelte/icons/search';
-	import SettingsIcon from '@lucide/svelte/icons/settings';
+	import {
+		CalendarIcon,
+		HouseIcon,
+		InboxIcon,
+		PanelLeft,
+		SearchIcon,
+		SettingsIcon
+	} from '@lucide/svelte';
 	import * as Sidebar from '$lib/components/ui/sidebar/index.js';
+	import { Button } from '$lib/components/ui/button/index.js';
+	import { useSidebar } from '$lib/components/ui/sidebar/index.js';
 
-	// Menu items.
+	const { toggle } = useSidebar();
+
 	const items = [
 		{
 			title: 'Home',
@@ -58,4 +64,9 @@
 			</Sidebar.GroupContent>
 		</Sidebar.Group>
 	</Sidebar.Content>
+	<Sidebar.Footer>
+		<Button onclick={toggle} size="icon" variant="ghost">
+			<PanelLeft />
+		</Button>
+	</Sidebar.Footer>
 </Sidebar.Root>

@@ -30,7 +30,7 @@
 
 <Sidebar.Provider>
 	<AppSidebar />
-	<main>
+	<main class="grid w-full p-4">
 		<DataTable data={data.applications} {columns} />
 	</main>
 </Sidebar.Provider>
