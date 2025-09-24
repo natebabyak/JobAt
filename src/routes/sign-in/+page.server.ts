@@ -5,7 +5,7 @@ import { superValidate } from 'sveltekit-superforms';
 import * as table from '$lib/server/db/schema';
 import { zod4 } from 'sveltekit-superforms/adapters';
 import { eq } from 'drizzle-orm';
-import * as auth from '$lib/server/auth';
+import * as auth from '$lib/server/session';
 import { fail, redirect } from '@sveltejs/kit';
 import { verify } from '@node-rs/argon2';
 

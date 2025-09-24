@@ -47,7 +47,7 @@
 					</Form.Control>
 					<Form.FieldErrors />
 				</Form.Field>
-				<Form.Button>Sign in</Form.Button>
+				<Form.Button>Sign up</Form.Button>
 			</form>
 			<div class="relative">
 				<Separator />
