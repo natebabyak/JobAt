@@ -1,13 +1,32 @@
-import { integer, pgTable, serial, text, timestamp, varchar } from 'drizzle-orm/pg-core';
+import { integer, pgEnum, pgTable, serial, text, timestamp, varchar } from 'drizzle-orm/pg-core';
+
+const applicationLevel = pgEnum('application_level', [
+	'intern',
+	'entry-level',
+	'junior',
+	'mid-level',
+	'senior',
+	'staff',
+	'principal',
+	'distinguished',
+	'fellow'
+]);
+
+const applicationLocation = pgEnum('application_location', ['on-site', 'hybrid', 'remote']);
 
 const timestamps = {
 	createdAt: timestamp('created_at').defaultNow().notNull(),
-	updatedAt: timestamp('updated_at')
+	updatedAt: timestamp('updated_at').defaultNow().notNull(),
+	deletedAt: timestamp('deleted_at')
 };
 
 export const applications = pgTable('applications', {
-	position: varchar('position'),
-	company: varchar('company'),
+	id: serial('id').primaryKey(),
+	userId: serial('user_id')
+		.notNull()
+		.references(() => users.id),
+	position: varchar('position').notNull(),
+	company: varchar('company').notNull(),
 	submittedOn: timestamp('submitted_on', { mode: 'date', withTimezone: true }),
 	screenedOn: timestamp('screening_on', { mode: 'date', withTimezone: true }),
 	interviewingOn: timestamp('interviewing_on', { mode: 'date', withTimezone: true }),
@@ -15,6 +34,12 @@ export const applications = pgTable('applications', {
 	acceptedOn: timestamp('accepted_on', { mode: 'date', withTimezone: true }),
 	rejectedOn: timestamp('rejected_on', { mode: 'date', withTimezone: true }),
 	withdrawnOn: timestamp('withdrawn_on', { mode: 'date', withTimezone: true }),
+	canonicalizedCity: varchar('canonicalized_city'),
+	normalizedPosition: varchar('normalized_position'),
+	normalizedCompany: varchar('normalized_company'),
+	level: applicationLevel('level'),
+	location: applicationLocation('location'),
+	skills: varchar().array().default([]),
 	...timestamps
 });
 
