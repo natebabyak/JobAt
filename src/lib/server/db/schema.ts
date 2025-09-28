@@ -1,10 +1,19 @@
-import { integer, pgEnum, pgTable, serial, text, timestamp, varchar } from 'drizzle-orm/pg-core';
+import {
+	integer,
+	numeric,
+	pgEnum,
+	pgTable,
+	serial,
+	text,
+	timestamp,
+	varchar
+} from 'drizzle-orm/pg-core';
 
-const applicationLevel = pgEnum('application_level', [
+const Seniority = pgEnum('application_seniority', [
 	'intern',
-	'entry-level',
+	'entry',
 	'junior',
-	'mid-level',
+	'intemediate',
 	'senior',
 	'staff',
 	'principal',
@@ -12,9 +21,9 @@ const applicationLevel = pgEnum('application_level', [
 	'fellow'
 ]);
 
-const applicationLocationType = pgEnum('application_location_type', ['hybrid', 'onsite', 'remote']);
+const Arrangement = pgEnum('application_location_type', ['onsite', 'hybrid', 'remote']);
 
-export const skills = pgTable('skills', {});
+const SalaryPeriod = pgEnum('salary_period', ['hourly', 'daily', 'weekly', 'monthly', 'annually']);
 
 export const applications = pgTable('applications', {
 	id: serial('id').primaryKey(),
@@ -30,18 +39,19 @@ export const applications = pgTable('applications', {
 	acceptedOn: timestamp('accepted_on', { mode: 'date', withTimezone: true }),
 	rejectedOn: timestamp('rejected_on', { mode: 'date', withTimezone: true }),
 	withdrawnOn: timestamp('withdrawn_on', { mode: 'date', withTimezone: true }),
-	normalizedTitle: varchar('normalized_title'),
-	canonicalizedCompany: varchar('normalized_company'),
-	seniority: applicationLevel('level'),
-	locationType: applicationLocationType(),
-	skills: varchar('skills').array().default([]),
+	seniority: Seniority('seniority'),
+	arrangement: Arrangement('arrangement'),
+	salary: numeric('salary'),
+	salaryMin: numeric('salary_min'),
+	salaryMax: numeric('salary_max'),
+	salaryCurrency: varchar('salary_currency', { length: 3 }),
+	salaryPeriod: SalaryPeriod('salary_period'),
 	city: varchar('city'),
 	state: varchar('state'),
 	country: varchar('country'),
 	notes: text('notes'),
 	createdAt: timestamp('created_at', { mode: 'date', withTimezone: true }).defaultNow().notNull(),
-	updatedAt: timestamp('updated_at', { mode: 'date', withTimezone: true }).defaultNow().notNull(),
-	deletedAt: timestamp('deleted_at', { mode: 'date', withTimezone: true })
+	updatedAt: timestamp('updated_at', { mode: 'date', withTimezone: true }).defaultNow().notNull()
 });
 
 export const sessions = pgTable('sessions', {
@@ -54,12 +64,12 @@ export const sessions = pgTable('sessions', {
 
 export const users = pgTable('users', {
 	id: serial('id').primaryKey(),
-	emailAddress: varchar('email_address').unique(),
+	email: varchar('email').unique(),
 	passwordHash: varchar('password_hash'),
 	githubId: integer('github_id').unique(),
-	githubUsername: text('github_username'),
-	googleId: text('google_id').unique(),
-	googleUserame: text('google_username'),
+	githubUsername: varchar('github_username'),
+	googleId: varchar('google_id').unique(),
+	googleUsername: varchar('google_username'),
 	createdAt: timestamp('created_at', { mode: 'date', withTimezone: true }).defaultNow().notNull(),
 	updatedAt: timestamp('updated_at', { mode: 'date', withTimezone: true }).defaultNow().notNull()
 });
