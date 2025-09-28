@@ -13,7 +13,7 @@ const Seniority = pgEnum('application_seniority', [
 	'intern',
 	'entry',
 	'junior',
-	'intemediate',
+	'intermediate',
 	'senior',
 	'staff',
 	'principal',
@@ -27,7 +27,7 @@ const SalaryPeriod = pgEnum('salary_period', ['hourly', 'daily', 'weekly', 'mont
 
 export const applications = pgTable('applications', {
 	id: serial('id').primaryKey(),
-	userId: serial('user_id')
+	userId: integer('user_id')
 		.notNull()
 		.references(() => users.id),
 	title: varchar('title').notNull(),
@@ -56,7 +56,7 @@ export const applications = pgTable('applications', {
 
 export const sessions = pgTable('sessions', {
 	id: text('id').primaryKey(),
-	userId: text('user_id')
+	userId: integer('user_id')
 		.notNull()
 		.references(() => users.id),
 	expiresAt: timestamp('expires_at', { withTimezone: true, mode: 'date' }).notNull()

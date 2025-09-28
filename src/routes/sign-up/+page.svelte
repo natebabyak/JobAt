@@ -32,7 +32,12 @@
 				<Form.Field {form} name="email">
 					<Form.Control>
 						<Form.Label>Email address</Form.Label>
-						<Input bind:value={$formData.email} placeholder="example@domain.com" type="email" />
+						<Input
+							autocomplete="username"
+							bind:value={$formData.email}
+							placeholder="example@domain.com"
+							type="email"
+						/>
 					</Form.Control>
 					<Form.FieldErrors />
 				</Form.Field>
@@ -40,6 +45,7 @@
 					<Form.Control>
 						<Form.Label>Password</Form.Label>
 						<Input
+							autocomplete="current-password"
 							bind:value={$formData.password}
 							placeholder="&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;"
 							type="password"

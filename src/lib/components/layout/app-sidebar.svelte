@@ -10,8 +10,10 @@
 	import * as Sidebar from '$lib/components/ui/sidebar/index.js';
 	import { Button } from '$lib/components/ui/button/index.js';
 	import { useSidebar } from '$lib/components/ui/sidebar/index.js';
+	import Jobat from '$lib/components/icons/jobat.svelte';
+	import * as Tooltip from '$lib/components/ui/tooltip/index.js';
 
-	const { toggle } = useSidebar();
+	const { open, toggle } = useSidebar();
 
 	const items = [
 		{
@@ -44,7 +46,27 @@
 
 <Sidebar.Root collapsible="icon">
 	<Sidebar.Content>
+		<Sidebar.Header>
+			<div class="flex justify-between">
+				<Button href="/" size="icon" variant="ghost">
+					<Jobat class="size-6" />
+				</Button>
+				<Tooltip.Root>
+					<Tooltip.Trigger>
+						<Button onclick={toggle} size="icon" variant="ghost" class="cursor-ew-resize">
+							<PanelLeft />
+						</Button>
+					</Tooltip.Trigger>
+					<Tooltip.Content>
+						{open ? 'Close' : 'Open'} sidebar
+					</Tooltip.Content>
+				</Tooltip.Root>
+			</div>
+		</Sidebar.Header>
 		<Sidebar.Group>
+			<Sidebar.Header>
+				<Button>Add application</Button>
+			</Sidebar.Header>
 			<Sidebar.GroupLabel>Application</Sidebar.GroupLabel>
 			<Sidebar.GroupContent>
 				<Sidebar.Menu>
@@ -64,9 +86,4 @@
 			</Sidebar.GroupContent>
 		</Sidebar.Group>
 	</Sidebar.Content>
-	<Sidebar.Footer>
-		<Button onclick={toggle} size="icon" variant="ghost">
-			<PanelLeft />
-		</Button>
-	</Sidebar.Footer>
 </Sidebar.Root>
