@@ -12,8 +12,9 @@
 	import { useSidebar } from '$lib/components/ui/sidebar/index.js';
 	import Jobat from '$lib/components/icons/jobat.svelte';
 	import * as Tooltip from '$lib/components/ui/tooltip/index.js';
+	import { cn } from '$lib/utils';
 
-	const { open, toggle } = useSidebar();
+	const { open, setOpen, toggle } = useSidebar();
 
 	const items = [
 		{
@@ -48,14 +49,22 @@
 	<Sidebar.Content>
 		<Sidebar.Header>
 			<div class="flex justify-between">
-				<Button href="/" size="icon" variant="ghost">
-					<Jobat class="size-6" />
-				</Button>
+				<div>
+					<Button href="/" size="icon" variant="ghost" class={cn(!open && 'hidden')}>
+						<Jobat class="size-6" />
+					</Button>
+					<Button href="/" size="icon" variant="ghost" class={cn(open && 'hidden')}>
+						<PanelLeft class="size-6" />
+					</Button>
+				</div>
+				<h1 class="text-2xl font-light">JobAt</h1>
 				<Tooltip.Root>
 					<Tooltip.Trigger>
-						<Button onclick={toggle} size="icon" variant="ghost" class="cursor-ew-resize">
-							<PanelLeft />
-						</Button>
+						{#snippet child()}
+							<Button onclick={toggle} size="icon" variant="ghost" class="cursor-ew-resize">
+								<PanelLeft />
+							</Button>
+						{/snippet}
 					</Tooltip.Trigger>
 					<Tooltip.Content>
 						{open ? 'Close' : 'Open'} sidebar
@@ -64,7 +73,7 @@
 			</div>
 		</Sidebar.Header>
 		<Sidebar.Group>
-			<Sidebar.Header>
+			<Sidebar.Header class={cn(!open && 'hidden')}>
 				<Button>Add application</Button>
 			</Sidebar.Header>
 			<Sidebar.GroupLabel>Application</Sidebar.GroupLabel>

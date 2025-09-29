@@ -97,8 +97,8 @@
 <div>
 	<div class="flex items-center py-4">
 		<Input
-			placeholder="Filter emails..."
-			value={table.getColumn('email')?.getFilterValue() as string}
+			placeholder="Search..."
+			value={table.getColumn('title')?.getFilterValue() as string}
 			onchange={(e) => table.getColumn('email')?.setFilterValue(e.currentTarget.value)}
 			oninput={(e) => table.getColumn('email')?.setFilterValue(e.currentTarget.value)}
 			class="max-w-sm"

@@ -6,9 +6,18 @@ import DataTableCheckbox from './data-table-checkbox.svelte';
 export const Application = z.object({
 	position: z.string().min(1).max(255),
 	company: z.string().min(1).max(255),
-	status: z.enum(['submitted', 'interviewing', 'offered', 'accepted', 'rejected', 'withdrawn']),
-	submittedOn: z.date(),
-	interviewingOn: z.date().optional(),
+	status: z.enum([
+		'submitted',
+		'preInterview',
+		'interview',
+		'offered',
+		'accepted',
+		'rejected',
+		'withdrawn'
+	]),
+	submittedOn: z.date().optional(),
+	preInterviewOn: z.date().optional(),
+	interviewOn: z.date().optional(),
 	offeredOn: z.date().optional(),
 	acceptedOn: z.date().optional(),
 	rejectedOn: z.date().optional(),
