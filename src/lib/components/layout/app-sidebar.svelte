@@ -4,8 +4,10 @@
 		HouseIcon,
 		InboxIcon,
 		PanelLeft,
+		Plus,
 		SearchIcon,
-		SettingsIcon
+		SettingsIcon,
+		User
 	} from '@lucide/svelte';
 	import * as Sidebar from '$lib/components/ui/sidebar/index.js';
 	import { Button } from '$lib/components/ui/button/index.js';
@@ -13,6 +15,7 @@
 	import Jobat from '$lib/components/icons/jobat.svelte';
 	import * as Tooltip from '$lib/components/ui/tooltip/index.js';
 	import { cn } from '$lib/utils';
+	import * as DropdownMenu from '$lib/components/ui/dropdown-menu/index.js';
 
 	const { open, setOpen, toggle } = useSidebar();
 
@@ -49,15 +52,15 @@
 	<Sidebar.Content>
 		<Sidebar.Header>
 			<div class="flex justify-between">
-				<div>
+				{#if open}
 					<Button href="/" size="icon" variant="ghost" class={cn(!open && 'hidden')}>
 						<Jobat class="size-6" />
 					</Button>
+				{:else}
 					<Button href="/" size="icon" variant="ghost" class={cn(open && 'hidden')}>
 						<PanelLeft class="size-6" />
 					</Button>
-				</div>
-				<h1 class="text-2xl font-light">JobAt</h1>
+				{/if}
 				<Tooltip.Root>
 					<Tooltip.Trigger>
 						{#snippet child()}
@@ -73,9 +76,14 @@
 			</div>
 		</Sidebar.Header>
 		<Sidebar.Group>
-			<Sidebar.Header class={cn(!open && 'hidden')}>
-				<Button>Add application</Button>
-			</Sidebar.Header>
+			{#if open}
+				<Sidebar.Header>
+					<Button size="icon" variant="ghost">
+						<Plus />
+					</Button>
+					<Button>Add application</Button>
+				</Sidebar.Header>
+			{/if}
 			<Sidebar.GroupLabel>Application</Sidebar.GroupLabel>
 			<Sidebar.GroupContent>
 				<Sidebar.Menu>
@@ -95,4 +103,37 @@
 			</Sidebar.GroupContent>
 		</Sidebar.Group>
 	</Sidebar.Content>
+	<Sidebar.Footer>
+		<Sidebar.Group>
+			<Sidebar.GroupContent>
+				<Sidebar.Menu>
+					<Sidebar.MenuItem>
+						<DropdownMenu.Root>
+							<DropdownMenu.Trigger>
+								<Sidebar.MenuButton>
+									{#snippet child({ props })}
+										<div {...props}>
+											<User />
+											Account
+										</div>
+									{/snippet}
+								</Sidebar.MenuButton>
+							</DropdownMenu.Trigger>
+							<DropdownMenu.Content side="right" align="end">
+								<DropdownMenu.Group>
+									<DropdownMenu.Label>My Account</DropdownMenu.Label>
+									<DropdownMenu.Separator />
+									<DropdownMenu.Item>Profile</DropdownMenu.Item>
+									<DropdownMenu.Item>Billing</DropdownMenu.Item>
+									<DropdownMenu.Item>Team</DropdownMenu.Item>
+									<DropdownMenu.Item>Subscription</DropdownMenu.Item>
+								</DropdownMenu.Group>
+							</DropdownMenu.Content>
+						</DropdownMenu.Root>
+					</Sidebar.MenuItem>
+				</Sidebar.Menu>
+			</Sidebar.GroupContent>
+		</Sidebar.Group>
+	</Sidebar.Footer>
+	<Sidebar.Rail />
 </Sidebar.Root>
