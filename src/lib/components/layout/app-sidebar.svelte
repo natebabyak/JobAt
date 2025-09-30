@@ -53,14 +53,18 @@
 		<Sidebar.Header>
 			<div class="flex justify-between">
 				{#if open}
-					<Button href="/" size="icon" variant="ghost" class={cn(!open && 'hidden')}>
-						<Jobat class="size-6" />
+					<Button href="/" size="icon" variant="ghost">
+						<Jobat class="size-6 scale-100 group-hover/button:scale-0" />
+						<PanelLeft class="absolute scale-0 group-hover/button:scale-100" />
 					</Button>
 				{:else}
-					<Button href="/" size="icon" variant="ghost" class={cn(open && 'hidden')}>
-						<PanelLeft class="size-6" />
+					<Button onclick={toggle} size="icon" variant="ghost" class="group/button relative">
+						<Jobat class="size-6 scale-100 group-hover/button:scale-0" />
+						<PanelLeft class="absolute scale-0 group-hover/button:scale-100" />
 					</Button>
 				{/if}
+			</div>
+			{#if open}
 				<Tooltip.Root>
 					<Tooltip.Trigger>
 						{#snippet child()}
@@ -73,7 +77,7 @@
 						{open ? 'Close' : 'Open'} sidebar
 					</Tooltip.Content>
 				</Tooltip.Root>
-			</div>
+			{/if}
 		</Sidebar.Header>
 		<Sidebar.Group>
 			{#if open}
@@ -104,36 +108,26 @@
 		</Sidebar.Group>
 	</Sidebar.Content>
 	<Sidebar.Footer>
-		<Sidebar.Group>
-			<Sidebar.GroupContent>
-				<Sidebar.Menu>
-					<Sidebar.MenuItem>
-						<DropdownMenu.Root>
-							<DropdownMenu.Trigger>
-								<Sidebar.MenuButton>
-									{#snippet child({ props })}
-										<div {...props}>
-											<User />
-											Account
-										</div>
-									{/snippet}
-								</Sidebar.MenuButton>
-							</DropdownMenu.Trigger>
-							<DropdownMenu.Content side="right" align="end">
-								<DropdownMenu.Group>
-									<DropdownMenu.Label>My Account</DropdownMenu.Label>
-									<DropdownMenu.Separator />
-									<DropdownMenu.Item>Profile</DropdownMenu.Item>
-									<DropdownMenu.Item>Billing</DropdownMenu.Item>
-									<DropdownMenu.Item>Team</DropdownMenu.Item>
-									<DropdownMenu.Item>Subscription</DropdownMenu.Item>
-								</DropdownMenu.Group>
-							</DropdownMenu.Content>
-						</DropdownMenu.Root>
-					</Sidebar.MenuItem>
-				</Sidebar.Menu>
-			</Sidebar.GroupContent>
-		</Sidebar.Group>
+		<DropdownMenu.Root>
+			<DropdownMenu.Trigger>
+				{#snippet child({ props })}
+					<Sidebar.MenuButton {...props}>
+						<User />
+						Account
+					</Sidebar.MenuButton>
+				{/snippet}
+			</DropdownMenu.Trigger>
+			<DropdownMenu.Content side="right" align="end">
+				<DropdownMenu.Group>
+					<DropdownMenu.Label>My Account</DropdownMenu.Label>
+					<DropdownMenu.Separator />
+					<DropdownMenu.Item>Profile</DropdownMenu.Item>
+					<DropdownMenu.Item>Billing</DropdownMenu.Item>
+					<DropdownMenu.Item>Team</DropdownMenu.Item>
+					<DropdownMenu.Item>Subscription</DropdownMenu.Item>
+				</DropdownMenu.Group>
+			</DropdownMenu.Content>
+		</DropdownMenu.Root>
 	</Sidebar.Footer>
 	<Sidebar.Rail />
 </Sidebar.Root>
