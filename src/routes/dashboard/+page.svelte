@@ -31,6 +31,7 @@
 <Sidebar.Provider>
 	<AppSidebar />
 	<main class="grid w-full p-4">
+		<h1 class="text-2xl font-light">JobAt</h1>
 		<DataTable data={data.applications} {columns} />
 	</main>
 </Sidebar.Provider>

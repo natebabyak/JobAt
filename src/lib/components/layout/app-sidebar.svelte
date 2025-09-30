@@ -1,49 +1,25 @@
 <script lang="ts">
-	import {
-		CalendarIcon,
-		HouseIcon,
-		InboxIcon,
-		PanelLeft,
-		Plus,
-		SearchIcon,
-		SettingsIcon,
-		User
-	} from '@lucide/svelte';
+	import { ChartLine, Lightbulb, LogOut, PanelLeft, Plus, Table2, User } from '@lucide/svelte';
 	import * as Sidebar from '$lib/components/ui/sidebar/index.js';
 	import { Button } from '$lib/components/ui/button/index.js';
-	import { useSidebar } from '$lib/components/ui/sidebar/index.js';
 	import Jobat from '$lib/components/icons/jobat.svelte';
 	import * as Tooltip from '$lib/components/ui/tooltip/index.js';
-	import { cn } from '$lib/utils';
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu/index.js';
 
-	const { open, setOpen, toggle } = useSidebar();
+	const sidebar = Sidebar.useSidebar();
 
-	const items = [
+	const navigationItems = [
 		{
-			title: 'Home',
-			url: '#',
-			icon: HouseIcon
+			href: 'insights',
+			Icon: Lightbulb
 		},
 		{
-			title: 'Inbox',
-			url: '#',
-			icon: InboxIcon
+			href: 'charts',
+			Icon: ChartLine
 		},
 		{
-			title: 'Calendar',
-			url: '#',
-			icon: CalendarIcon
-		},
-		{
-			title: 'Search',
-			url: '#',
-			icon: SearchIcon
-		},
-		{
-			title: 'Settings',
-			url: '#',
-			icon: SettingsIcon
+			href: 'table',
+			Icon: Table2
 		}
 	];
 </script>
@@ -52,52 +28,66 @@
 	<Sidebar.Content>
 		<Sidebar.Header>
 			<div class="flex justify-between">
-				{#if open}
+				{#if sidebar.open}
 					<Button href="/" size="icon" variant="ghost">
-						<Jobat class="size-6 scale-100 group-hover/button:scale-0" />
-						<PanelLeft class="absolute scale-0 group-hover/button:scale-100" />
+						<Jobat class="size-6" />
 					</Button>
 				{:else}
-					<Button onclick={toggle} size="icon" variant="ghost" class="group/button relative">
-						<Jobat class="size-6 scale-100 group-hover/button:scale-0" />
-						<PanelLeft class="absolute scale-0 group-hover/button:scale-100" />
-					</Button>
+					<Tooltip.Root>
+						<Tooltip.Trigger>
+							{#snippet child({ props })}
+								<Button
+									{...props}
+									onclick={sidebar.toggle}
+									size="icon"
+									variant="ghost"
+									class="group/button relative cursor-ew-resize"
+								>
+									<Jobat class="size-6 scale-100 transition-transform group-hover/button:scale-0" />
+									<PanelLeft
+										class="absolute scale-0 transition-transform group-hover/button:scale-100"
+									/>
+								</Button>
+							{/snippet}
+						</Tooltip.Trigger>
+						<Tooltip.Content side="right">Open Sidebar</Tooltip.Content>
+					</Tooltip.Root>
 				{/if}
-			</div>
-			{#if open}
 				<Tooltip.Root>
 					<Tooltip.Trigger>
-						{#snippet child()}
-							<Button onclick={toggle} size="icon" variant="ghost" class="cursor-ew-resize">
+						{#snippet child({ props })}
+							<Button
+								{...props}
+								onclick={sidebar.toggle}
+								size="icon"
+								variant="ghost"
+								class="cursor-ew-resize"
+							>
 								<PanelLeft />
 							</Button>
 						{/snippet}
 					</Tooltip.Trigger>
-					<Tooltip.Content>
-						{open ? 'Close' : 'Open'} sidebar
-					</Tooltip.Content>
+					<Tooltip.Content side="right">Close Sidebar</Tooltip.Content>
 				</Tooltip.Root>
-			{/if}
+			</div>
 		</Sidebar.Header>
 		<Sidebar.Group>
-			{#if open}
-				<Sidebar.Header>
-					<Button size="icon" variant="ghost">
-						<Plus />
-					</Button>
-					<Button>Add application</Button>
-				</Sidebar.Header>
-			{/if}
-			<Sidebar.GroupLabel>Application</Sidebar.GroupLabel>
+			<Sidebar.Header>
+				<Button>
+					<Plus />
+					Add application
+				</Button>
+			</Sidebar.Header>
+			<Sidebar.GroupLabel>Dashboard</Sidebar.GroupLabel>
 			<Sidebar.GroupContent>
 				<Sidebar.Menu>
-					{#each items as item (item.title)}
+					{#each navigationItems as { href, Icon }}
 						<Sidebar.MenuItem>
 							<Sidebar.MenuButton>
 								{#snippet child({ props })}
-									<a href={item.url} {...props}>
-										<item.icon />
-										<span>{item.title}</span>
+									<a {...props} href={`dashboard#${href}`}>
+										<Icon />
+										<span class="capitalize">{href}</span>
 									</a>
 								{/snippet}
 							</Sidebar.MenuButton>
@@ -117,17 +107,17 @@
 					</Sidebar.MenuButton>
 				{/snippet}
 			</DropdownMenu.Trigger>
-			<DropdownMenu.Content side="right" align="end">
+			<DropdownMenu.Content align="end" side="right">
 				<DropdownMenu.Group>
-					<DropdownMenu.Label>My Account</DropdownMenu.Label>
+					<DropdownMenu.Label>Account</DropdownMenu.Label>
 					<DropdownMenu.Separator />
-					<DropdownMenu.Item>Profile</DropdownMenu.Item>
-					<DropdownMenu.Item>Billing</DropdownMenu.Item>
-					<DropdownMenu.Item>Team</DropdownMenu.Item>
-					<DropdownMenu.Item>Subscription</DropdownMenu.Item>
+					<DropdownMenu.Item>
+						<LogOut />
+						Sign out
+					</DropdownMenu.Item>
 				</DropdownMenu.Group>
 			</DropdownMenu.Content>
 		</DropdownMenu.Root>
 	</Sidebar.Footer>
-	<Sidebar.Rail />
+	<Sidebar.Rail title={`${sidebar.open ? 'Close' : 'Open'} sidebar`} />
 </Sidebar.Root>
