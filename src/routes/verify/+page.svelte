@@ -7,6 +7,10 @@
 
 <main class="flex h-screen items-center">
 	<Card.Root class="mx-auto w-full max-w-sm">
+		<Card.Header class="grid gap-4 text-center">
+			<AtSign class="mx-auto" />
+			<Card.Title>Verify your email address</Card.Title>
+		</Card.Header>
 		<Card.Content>
 			<InputOTP.Root maxlength={6} pattern={REGEXP_ONLY_DIGITS}>
 				{#snippet children({ cells })}

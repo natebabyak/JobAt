@@ -1,10 +1,26 @@
 <script lang="ts">
-	import { ChartLine, Lightbulb, LogOut, PanelLeft, Plus, Table2, User } from '@lucide/svelte';
+	import {
+		ChartLine,
+		Computer,
+		Ellipsis,
+		Lightbulb,
+		LogOut,
+		Monitor,
+		Moon,
+		PanelLeft,
+		Plus,
+		Sun,
+		Table2,
+		User
+	} from '@lucide/svelte';
 	import * as Sidebar from '$lib/components/ui/sidebar/index.js';
 	import { Button } from '$lib/components/ui/button/index.js';
 	import Jobat from '$lib/components/icons/jobat.svelte';
 	import * as Tooltip from '$lib/components/ui/tooltip/index.js';
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu/index.js';
+	import { mode, setMode } from 'mode-watcher';
+
+	const theme = $derived(mode.current ?? 'system');
 
 	const sidebar = Sidebar.useSidebar();
 
@@ -104,12 +120,31 @@
 					<Sidebar.MenuButton {...props}>
 						<User />
 						Account
+						<Ellipsis class="ml-auto" />
 					</Sidebar.MenuButton>
 				{/snippet}
 			</DropdownMenu.Trigger>
 			<DropdownMenu.Content align="end" side="right">
 				<DropdownMenu.Group>
 					<DropdownMenu.Label>Account</DropdownMenu.Label>
+					<DropdownMenu.Separator />
+					<DropdownMenu.RadioGroup
+						value={theme}
+						onValueChange={(theme) => setMode(theme as 'light' | 'dark' | 'system')}
+					>
+						<DropdownMenu.RadioItem value="light">
+							Light
+							<Sun class="ml-auto" />
+						</DropdownMenu.RadioItem>
+						<DropdownMenu.RadioItem value="dark">
+							Dark
+							<Moon class="ml-auto" />
+						</DropdownMenu.RadioItem>
+						<DropdownMenu.RadioItem value="system">
+							System
+							<Monitor class="ml-auto" />
+						</DropdownMenu.RadioItem>
+					</DropdownMenu.RadioGroup>
 					<DropdownMenu.Separator />
 					<DropdownMenu.Item>
 						<LogOut />

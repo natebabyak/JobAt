@@ -21,8 +21,12 @@
 	const { form: formData, enhance } = form;
 </script>
 
-<main class="flex h-screen items-center">
-	<Card.Root class="mx-auto w-full max-w-sm">
+<svelte:head>
+	<title>Sign Up - JobAt</title>
+</svelte:head>
+
+<main class="flex h-screen items-center bg-radial from-[#7d7dff3f] to-[var(--background)]">
+	<Card.Root class="mx-auto w-full max-w-sm bg-card/75">
 		<Card.Header class="grid gap-4 text-center">
 			<AtSign class="mx-auto" />
 			<Card.Title>Sign up for JobAt</Card.Title>
