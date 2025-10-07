@@ -1,4 +1,8 @@
-# JobAt
+<div align="center">
+    <img alt="JobAt" src="./src/lib/assets/favicon.svg" width="80" />
+</div>
+<h1 align="center">JobAt</h1>
+<p align="center">The free and open-source AI-powered job application tracker</p>
 
 ## Usage
 
