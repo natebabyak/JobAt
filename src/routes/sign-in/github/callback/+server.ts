@@ -3,7 +3,7 @@ import { github } from '$lib/server/oauth';
 import { redirect, type RequestEvent } from '@sveltejs/kit';
 import type { OAuth2Tokens } from 'arctic';
 import { db } from '$lib/server/db';
-import { users } from '$lib/server/db/schema';
+import { users } from '$lib/server/db/schema/tables';
 import { eq } from 'drizzle-orm';
 
 export async function GET(event: RequestEvent): Promise<Response> {

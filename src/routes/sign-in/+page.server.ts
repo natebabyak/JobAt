@@ -2,7 +2,7 @@ import { db } from '$lib/server/db/index.js';
 import type { Actions, PageServerLoad } from './$types';
 import { schema } from './schema';
 import { superValidate } from 'sveltekit-superforms';
-import * as table from '$lib/server/db/schema';
+import * as table from '$lib/server/db/schema/tables';
 import { zod4 } from 'sveltekit-superforms/adapters';
 import { eq } from 'drizzle-orm';
 import * as auth from '$lib/server/session';

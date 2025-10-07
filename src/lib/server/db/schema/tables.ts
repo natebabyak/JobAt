@@ -1,29 +1,13 @@
+import { Arrangement, SalaryPeriod, Seniority } from './enums';
 import {
 	integer,
 	numeric,
-	pgEnum,
 	pgTable,
 	serial,
 	text,
 	timestamp,
 	varchar
 } from 'drizzle-orm/pg-core';
-
-const Seniority = pgEnum('application_seniority', [
-	'intern',
-	'entry',
-	'junior',
-	'intermediate',
-	'senior',
-	'staff',
-	'principal',
-	'distinguished',
-	'fellow'
-]);
-
-const Arrangement = pgEnum('application_location_type', ['onsite', 'hybrid', 'remote']);
-
-const SalaryPeriod = pgEnum('salary_period', ['hourly', 'daily', 'weekly', 'monthly', 'annually']);
 
 export const applications = pgTable('applications', {
 	id: serial('id').primaryKey(),
