@@ -3,6 +3,7 @@
 		ChartLine,
 		Computer,
 		Ellipsis,
+		Gauge,
 		Lightbulb,
 		LogOut,
 		Monitor,
@@ -19,6 +20,7 @@
 	import * as Tooltip from '$lib/components/ui/tooltip/index.js';
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu/index.js';
 	import { mode, setMode } from 'mode-watcher';
+	import * as Collapsible from '$lib/components/ui/collapsible/index.js';
 
 	const theme = $derived(mode.current ?? 'system');
 
@@ -26,27 +28,36 @@
 
 	const navigationItems = [
 		{
-			href: 'insights',
-			Icon: Lightbulb
-		},
-		{
-			href: 'charts',
-			Icon: ChartLine
-		},
-		{
-			href: 'table',
-			Icon: Table2
+			icon: Gauge,
+			label: 'Dashboard',
+			items: [
+				{
+					href: '/dashboard/#insights',
+					icon: Lightbulb,
+					label: 'Insights'
+				},
+				{
+					href: '/dashboard#charts',
+					icon: ChartLine,
+					label: 'Charts'
+				},
+				{
+					href: '/dashboard#table',
+					icon: Table2,
+					label: 'Table'
+				}
+			]
 		}
 	];
 </script>
 
-<Sidebar.Root collapsible="icon">
+<Sidebar.Root collapsible="icon" variant="floating">
 	<Sidebar.Content>
 		<Sidebar.Header>
 			<div class="flex justify-between">
 				{#if sidebar.open}
 					<Button href="/" size="icon" variant="ghost">
-						<Jobat class="size-6" />
+						<Jobat />
 					</Button>
 				{:else}
 					<Tooltip.Root>
@@ -59,7 +70,7 @@
 									variant="ghost"
 									class="group/button relative cursor-ew-resize"
 								>
-									<Jobat class="size-6 scale-100 transition-transform group-hover/button:scale-0" />
+									<Jobat class="scale-100 transition-transform group-hover/button:scale-0" />
 									<PanelLeft
 										class="absolute scale-0 transition-transform group-hover/button:scale-100"
 									/>
@@ -94,22 +105,33 @@
 					Add application
 				</Button>
 			</Sidebar.Header>
-			<Sidebar.GroupLabel>Dashboard</Sidebar.GroupLabel>
+			<Sidebar.GroupLabel>Navigation</Sidebar.GroupLabel>
 			<Sidebar.GroupContent>
-				<Sidebar.Menu>
-					{#each navigationItems as { href, Icon }}
-						<Sidebar.MenuItem>
-							<Sidebar.MenuButton>
-								{#snippet child({ props })}
-									<a {...props} href={`dashboard#${href}`}>
-										<Icon />
-										<span class="capitalize">{href}</span>
-									</a>
-								{/snippet}
-							</Sidebar.MenuButton>
-						</Sidebar.MenuItem>
-					{/each}
-				</Sidebar.Menu>
+				{#each navigationItems as navigationItem}
+					<Sidebar.Menu>
+						<Collapsible.Root open class="group/collapsible">
+							<Sidebar.MenuItem>
+								<Collapsible.Trigger>
+									{#snippet child({ props })}
+										<Sidebar.MenuButton {...props}>
+											<navigationItem.icon />
+											{navigationItem.label}
+										</Sidebar.MenuButton>
+									{/snippet}
+								</Collapsible.Trigger>
+								<Collapsible.Content>
+									<Sidebar.MenuSub>
+										{#each navigationItem.items as item}
+											<Sidebar.MenuSubItem>
+												{item.label}
+											</Sidebar.MenuSubItem>
+										{/each}
+									</Sidebar.MenuSub>
+								</Collapsible.Content>
+							</Sidebar.MenuItem>
+						</Collapsible.Root>
+					</Sidebar.Menu>
+				{/each}
 			</Sidebar.GroupContent>
 		</Sidebar.Group>
 	</Sidebar.Content>
