@@ -12,15 +12,40 @@
 
 ```sh
 git glone https://github.com/natebabyak/JobAt.git
+cd JobAt
 ```
 
-#### 2. Install Dependencies
+#### 2. Set Up Environment Variables
+
+Create a `.env` file in the project root:
+
+```ini
+# Database
+DATABASE_URL="postgres://user:password@host:port/db-name"
+POSTGRES_PASSWORD=""
+
+# GitHub OAuth
+GITHUB_CLIENT_ID=""
+GITHUB_CLIENT_SECRET=""
+
+# Google OAuth
+GOOGLE_CLIENT_ID=""
+GOOGLE_CLIENT_SECRET=""
+```
+
+#### 3. Start the Database
+
+```sh
+docker compose up
+```
+
+#### 4. Install Dependencies
 
 ```sh
 npm install
 ```
 
-#### 3. Start Local Development Server
+#### 5. Run the Development Server
 
 ```sh
 npm run dev
