@@ -19,10 +19,8 @@
 	import Jobat from '$lib/components/icons/jobat.svelte';
 	import * as Tooltip from '$lib/components/ui/tooltip/index.js';
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu/index.js';
-	import { mode, setMode } from 'mode-watcher';
+	import { mode, toggleMode } from 'mode-watcher';
 	import * as Collapsible from '$lib/components/ui/collapsible/index.js';
-
-	const theme = $derived(mode.current ?? 'system');
 
 	const sidebar = Sidebar.useSidebar();
 
@@ -54,12 +52,11 @@
 <Sidebar.Root collapsible="icon" variant="floating">
 	<Sidebar.Content>
 		<Sidebar.Header>
-			<div class="flex justify-between">
-				{#if sidebar.open}
+			{#if sidebar.open}
+				<div class="flex justify-between">
 					<Button href="/" size="icon" variant="ghost">
-						<Jobat />
+						<Jobat class="size-6" />
 					</Button>
-				{:else}
 					<Tooltip.Root>
 						<Tooltip.Trigger>
 							{#snippet child({ props })}
@@ -68,18 +65,16 @@
 									onclick={sidebar.toggle}
 									size="icon"
 									variant="ghost"
-									class="group/button relative cursor-ew-resize"
+									class="cursor-ew-resize"
 								>
-									<Jobat class="scale-100 transition-transform group-hover/button:scale-0" />
-									<PanelLeft
-										class="absolute scale-0 transition-transform group-hover/button:scale-100"
-									/>
+									<PanelLeft />
 								</Button>
 							{/snippet}
 						</Tooltip.Trigger>
-						<Tooltip.Content side="right">Open Sidebar</Tooltip.Content>
+						<Tooltip.Content side="right">Close Sidebar</Tooltip.Content>
 					</Tooltip.Root>
-				{/if}
+				</div>
+			{:else}
 				<Tooltip.Root>
 					<Tooltip.Trigger>
 						{#snippet child({ props })}
@@ -88,15 +83,18 @@
 								onclick={sidebar.toggle}
 								size="icon"
 								variant="ghost"
-								class="cursor-ew-resize"
+								class="group/button relative cursor-ew-resize"
 							>
-								<PanelLeft />
+								<Jobat class="scale-100 transition-transform group-hover/button:scale-0" />
+								<PanelLeft
+									class="absolute scale-0 transition-transform group-hover/button:scale-100"
+								/>
 							</Button>
 						{/snippet}
 					</Tooltip.Trigger>
-					<Tooltip.Content side="right">Close Sidebar</Tooltip.Content>
+					<Tooltip.Content side="right">Open Sidebar</Tooltip.Content>
 				</Tooltip.Root>
-			</div>
+			{/if}
 		</Sidebar.Header>
 		<Sidebar.Group>
 			<Sidebar.Header>
@@ -150,23 +148,13 @@
 				<DropdownMenu.Group>
 					<DropdownMenu.Label>Account</DropdownMenu.Label>
 					<DropdownMenu.Separator />
-					<DropdownMenu.RadioGroup
-						value={theme}
-						onValueChange={(theme) => setMode(theme as 'light' | 'dark' | 'system')}
-					>
-						<DropdownMenu.RadioItem value="light">
-							Light
-							<Sun class="ml-auto" />
-						</DropdownMenu.RadioItem>
-						<DropdownMenu.RadioItem value="dark">
-							Dark
-							<Moon class="ml-auto" />
-						</DropdownMenu.RadioItem>
-						<DropdownMenu.RadioItem value="system">
-							System
-							<Monitor class="ml-auto" />
-						</DropdownMenu.RadioItem>
-					</DropdownMenu.RadioGroup>
+					<DropdownMenu.Item onclick={toggleMode} closeOnSelect={false}>
+						<Sun class="scale-100 rotate-0 !transition-transform dark:scale-0 dark:-rotate-90" />
+						<Moon
+							class="absolute scale-0 rotate-90 !transition-transform dark:scale-100 dark:rotate-0"
+						/>
+						Toggle Theme
+					</DropdownMenu.Item>
 					<DropdownMenu.Separator />
 					<DropdownMenu.Item>
 						<LogOut />
@@ -176,5 +164,5 @@
 			</DropdownMenu.Content>
 		</DropdownMenu.Root>
 	</Sidebar.Footer>
-	<Sidebar.Rail title={`${sidebar.open ? 'Close' : 'Open'} sidebar`} />
+	<Sidebar.Rail title={`${sidebar.open ? 'Close' : 'Open'} Sidebar`} />
 </Sidebar.Root>
