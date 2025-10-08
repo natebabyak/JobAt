@@ -9,7 +9,7 @@ export const load: PageServerLoad = (event) => {
 		return redirect(302, '/sign-up');
 	}
 
-	const applications: z.infer<typeof Application>[] = [];
+	const applications: z.infer<typeof Application>[] = []
 
 	return {
 		applications

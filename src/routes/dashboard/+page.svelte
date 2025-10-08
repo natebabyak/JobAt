@@ -1,10 +1,10 @@
 <script lang="ts">
-	import AppSidebar from '$lib/components/layout/app-sidebar.svelte';
 	import * as Card from '$lib/components/ui/card/index.js';
 	import { columns } from './columns.js';
 	import DataTable from './data-table.svelte';
 	import type { PageProps } from './$types';
 	import * as Sidebar from '$lib/components/ui/sidebar/index.js';
+	import AppSidebar from './app-sidebar.svelte';
 
 	let { data }: PageProps = $props();
 </script>
