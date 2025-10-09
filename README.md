@@ -11,7 +11,7 @@
 #### 1. Clone Respository
 
 ```sh
-git glone https://github.com/natebabyak/JobAt.git
+git clone https://github.com/natebabyak/JobAt.git
 cd JobAt
 ```
 
