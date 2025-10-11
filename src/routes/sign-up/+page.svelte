@@ -1,7 +1,5 @@
 <script lang="ts">
-	import { AtSign, Eye, EyeOff } from '@lucide/svelte';
 	import { Button } from '$lib/components/ui/button/index.js';
-	import * as ButtonGroup from '$lib/components/ui/button-group/index.js';
 	import * as Card from '$lib/components/ui/card/index.js';
 	import * as Form from '$lib/components/ui/form/index.js';
 	import Github from '$lib/components/icons/github.svelte';
@@ -12,13 +10,9 @@
 	import { schema } from './schema';
 	import { Separator } from '$lib/components/ui/separator/index.js';
 	import { superForm } from 'sveltekit-superforms';
-	import * as Tooltip from '$lib/components/ui/tooltip/index.js';
 	import { zod4 } from 'sveltekit-superforms/adapters';
-	import { cn } from '$lib/utils';
 
 	const { data }: PageProps = $props();
-
-	const showPassword = $state<boolean>(false);
 
 	const form = superForm(data.form, {
 		validators: zod4(schema)
@@ -58,28 +52,13 @@
 					<Form.Control>
 						{#snippet children({ props })}
 							<Form.Label>Password</Form.Label>
-							<ButtonGroup.Root class="w-full">
-								<Input
-									{...props}
-									autocomplete="new-password"
-									placeholder="&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;"
-									type="password"
-									bind:value={$formData.password}
-								/>
-								<Tooltip.Root>
-									<Tooltip.Trigger>
-										{#snippet child({ props })}
-											<Button {...props} size="icon" variant="outline">
-												<EyeOff class={cn('')} />
-												<Eye class={cn('')} />
-											</Button>
-										{/snippet}
-									</Tooltip.Trigger>
-									<Tooltip.Content>
-										<p>Add to library</p>
-									</Tooltip.Content>
-								</Tooltip.Root>
-							</ButtonGroup.Root>
+							<Input
+								{...props}
+								autocomplete="new-password"
+								placeholder="&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;"
+								type="password"
+								bind:value={$formData.password}
+							/>
 						{/snippet}
 					</Form.Control>
 					<Form.FieldErrors />

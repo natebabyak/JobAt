@@ -1,11 +1,11 @@
 <script lang="ts">
-	import { AtSign } from '@lucide/svelte';
 	import { Button } from '$lib/components/ui/button/index.js';
 	import * as Card from '$lib/components/ui/card/index.js';
 	import * as Form from '$lib/components/ui/form/index.js';
 	import Github from '$lib/components/icons/github.svelte';
 	import Google from '$lib/components/icons/google.svelte';
 	import { Input } from '$lib/components/ui/input/index.js';
+	import Jobat from '$lib/components/icons/jobat.svelte';
 	import type { PageProps } from './$types';
 	import { schema } from './schema';
 	import { Separator } from '$lib/components/ui/separator/index.js';
@@ -21,40 +21,48 @@
 	const { form: formData, enhance } = form;
 </script>
 
-<main class="flex h-screen items-center bg-radial from-[#7d7dff] to-[var(--background)]">
+<main class="flex h-screen items-center bg-radial from-[#7d7dff3f] to-[var(--background)]">
 	<Card.Root class="mx-auto w-full max-w-sm">
-		<Card.Header class="grid gap-4 text-center">
-			<AtSign class="mx-auto" />
-			<Card.Title>Sign in to JobAt</Card.Title>
+		<Card.Header class="grid gap-4">
+			<Jobat class="mx-auto size-8" />
+			<Card.Title class="mx-auto">Sign in to JobAt</Card.Title>
 		</Card.Header>
 		<Card.Content class="grid gap-4">
 			<form action="signIn" method="post" use:enhance class="grid gap-2">
 				<Form.Field {form} name="email">
 					<Form.Control>
-						<Form.Label>Email address</Form.Label>
-						<Input
-							autocomplete="username"
-							bind:value={$formData.email}
-							placeholder="example@domain.com"
-							type="email"
-						/>
+						{#snippet children({ props })}
+							<Form.Label>Email</Form.Label>
+							<Input
+								{...props}
+								autocomplete="email"
+								placeholder="example@example.com"
+								type="email"
+								bind:value={$formData.email}
+							/>
+						{/snippet}
 					</Form.Control>
 					<Form.FieldErrors />
 				</Form.Field>
 				<Form.Field {form} name="password">
 					<Form.Control>
-						<div class="flex justify-between">
-							<Form.Label>Password</Form.Label>
-							<a href="/" class="text-xs text-muted-foreground underline-offset-4 hover:underline">
-								Forgot password?
-							</a>
-						</div>
-						<Input
-							autocomplete="current-password"
-							bind:value={$formData.password}
-							placeholder="&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;"
-							type="password"
-						/>
+						{#snippet children({ props })}
+							<div class="flex justify-between">
+								<Form.Label>Password</Form.Label>
+								<a
+									href="/forgot-password"
+									class="text-xs text-muted-foreground underline-offset-4 hover:underline"
+								>
+									Forgot password?
+								</a>
+							</div>
+							<Input
+								autocomplete="current-password"
+								bind:value={$formData.password}
+								placeholder="&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;"
+								type="password"
+							/>
+						{/snippet}
 					</Form.Control>
 					<Form.FieldErrors />
 				</Form.Field>
