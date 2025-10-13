@@ -1,23 +1,21 @@
-import type { Application } from './columns';
 import type { Actions, PageServerLoad } from './$types';
 import { fail, redirect } from '@sveltejs/kit';
 import { invalidateSession, deleteSessionTokenCookie } from '$lib/server/session';
-import { schema } from './schema';
 import { superValidate } from 'sveltekit-superforms';
 import { zod4 } from 'sveltekit-superforms/adapters';
-import type z from 'zod';
+import { applicationSchema, type ApplicationSchema } from './schema';
 
 export const load: PageServerLoad = async (event) => {
 	if (!event.locals.user) {
 		return redirect(302, '/sign-up');
 	}
 
-	const applications: z.infer<typeof Application>[] = [];
-	const form = await superValidate(zod4(schema));
+	const applications: ApplicationSchema[] = [];
+	const applicationForm = await superValidate(zod4(applicationSchema));
 
 	return {
 		applications,
-		form
+		applicationForm
 	};
 };
 

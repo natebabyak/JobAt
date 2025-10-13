@@ -1,30 +1,9 @@
 import { renderComponent } from '$lib/components/ui/data-table';
 import type { ColumnDef } from '@tanstack/table-core';
-import z from 'zod';
 import DataTableCheckbox from './data-table-checkbox.svelte';
+import type { ApplicationSchema } from './schema';
 
-export const Application = z.object({
-	position: z.string().min(1).max(255),
-	company: z.string().min(1).max(255),
-	status: z.enum([
-		'submitted',
-		'preInterview',
-		'interview',
-		'offered',
-		'accepted',
-		'rejected',
-		'withdrawn'
-	]),
-	submittedOn: z.date().optional(),
-	preInterviewOn: z.date().optional(),
-	interviewOn: z.date().optional(),
-	offeredOn: z.date().optional(),
-	acceptedOn: z.date().optional(),
-	rejectedOn: z.date().optional(),
-	withdrawnOn: z.date().optional()
-});
-
-export const columns: ColumnDef<z.infer<typeof Application>>[] = [
+export const columns: ColumnDef<ApplicationSchema>[] = [
 	{
 		id: 'select',
 		header: ({ table }) =>

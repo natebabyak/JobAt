@@ -1,18 +1,18 @@
 <script lang="ts">
+	import { applicationSchema } from './schema.js';
 	import * as Card from '$lib/components/ui/card/index.js';
 	import { columns } from './columns.js';
 	import type { PageProps } from './$types';
 	import * as Sidebar from '$lib/components/ui/sidebar/index.js';
-	import AppSidebar from './app-sidebar.svelte';
+	import AppSidebar from './app-sidebar/app-sidebar.svelte';
 	import DataTable from './data-table.svelte';
 	import { superForm } from 'sveltekit-superforms';
 	import { zod4 } from 'sveltekit-superforms/adapters';
-	import { schema } from './schema.js';
 
 	let { data }: PageProps = $props();
 
-	const form = superForm(data.form, {
-		validators: zod4(schema)
+	const form = superForm(data.applicationForm, {
+		validators: zod4(applicationSchema)
 	});
 </script>
 
@@ -37,7 +37,7 @@
 
 <Sidebar.Provider>
 	<AppSidebar {form} />
-	<main class="grid w-full bg-radial from-[#7d7dff3f] to-[var(--background)] p-4">
+	<main class="grid w-full p-4">
 		<h1 class="text-2xl font-light">JobAt</h1>
 		<div class="grid grid-cols-3">
 			{#each { length: 6 } as insight}
