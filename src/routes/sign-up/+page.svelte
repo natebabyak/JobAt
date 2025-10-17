@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { authClient } from '$lib/auth-client';
 	import { Button } from '$lib/components/ui/button/index.js';
 	import * as Card from '$lib/components/ui/card/index.js';
 	import * as Form from '$lib/components/ui/form/index.js';
@@ -11,7 +12,6 @@
 	import { Separator } from '$lib/components/ui/separator/index.js';
 	import { superForm } from 'sveltekit-superforms';
 	import { zod4 } from 'sveltekit-superforms/adapters';
-	import { signUp } from '$lib/auth-client';
 
 	const { data }: PageProps = $props();
 
@@ -75,11 +75,27 @@
 				</span>
 			</div>
 			<div class="grid grid-cols-2 gap-2">
-				<Button href="/sign-in/github" variant="outline">
+				<Button
+					onclick={() => {
+						authClient.signIn.social({
+							provider: 'github',
+							callbackURL: '/dashboard'
+						});
+					}}
+					variant="outline"
+				>
 					<Github />
 					GitHub
 				</Button>
-				<Button href="/sign-in/google" variant="outline">
+				<Button
+					onclick={() => {
+						authClient.signIn.social({
+							provider: 'google',
+							callbackURL: '/dashboard'
+						});
+					}}
+					variant="outline"
+				>
 					<Google />
 					Google
 				</Button>

@@ -1,34 +1,21 @@
-import type { Actions, PageServerLoad } from './$types';
-import { fail, redirect } from '@sveltejs/kit';
-import { invalidateSession, deleteSessionTokenCookie } from '$lib/server/session';
+import { applicationSchema, type ApplicationSchema } from './schema';
+import { auth } from '$lib/server/auth';
+import type { PageServerLoad } from './$types';
 import { superValidate } from 'sveltekit-superforms';
 import { zod4 } from 'sveltekit-superforms/adapters';
-import { applicationSchema, type ApplicationSchema } from './schema';
 
 export const load: PageServerLoad = async (event) => {
-	if (!event.locals.user) {
-		return redirect(302, '/sign-up');
-	}
-
 	const applications: ApplicationSchema[] = [];
+
 	const applicationForm = await superValidate(zod4(applicationSchema));
+
+	const session = await auth.api.getSession({
+		headers: event.request.headers
+	});
 
 	return {
 		applications,
-		applicationForm
+		applicationForm,
+		session
 	};
-};
-
-export const actions: Actions = {
-	default: async (event) => {
-		if (event.locals.session === null) {
-			return fail(401);
-		}
-
-		await invalidateSession(event.locals.session.id);
-
-		deleteSessionTokenCookie(event);
-
-		return redirect(302, '/login');
-	}
 };

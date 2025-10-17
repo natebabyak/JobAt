@@ -7,6 +7,8 @@
 	import Sun from '@lucide/svelte/icons/sun';
 	import { toggleMode } from 'mode-watcher';
 	import User from '@lucide/svelte/icons/user';
+	import { authClient } from '$lib/auth-client';
+	import { redirect } from '@sveltejs/kit';
 </script>
 
 <Sidebar.Footer>
@@ -32,7 +34,11 @@
 					Toggle Theme
 				</DropdownMenu.Item>
 				<DropdownMenu.Separator />
-				<DropdownMenu.Item>
+				<DropdownMenu.Item
+					onclick={async () => {
+						await authClient.signOut();
+					}}
+				>
 					<LogOut />
 					Sign out
 				</DropdownMenu.Item>
