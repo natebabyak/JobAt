@@ -11,6 +11,7 @@
 	import { Separator } from '$lib/components/ui/separator/index.js';
 	import { superForm } from 'sveltekit-superforms';
 	import { zod4 } from 'sveltekit-superforms/adapters';
+	import { signUp } from '$lib/auth-client';
 
 	const { data }: PageProps = $props();
 
