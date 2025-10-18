@@ -1,9 +1,13 @@
 <script lang="ts">
 	import { authClient } from '$lib/auth-client';
 	import { Button } from '$lib/components/ui/button/index.js';
-	import { getLocalTimeZone, DateFormatter, type DateValue, today } from '@internationalized/date';
+	import {
+		CalendarDate,
+		getLocalTimeZone,
+		DateFormatter,
+		type DateValue
+	} from '@internationalized/date';
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu/index.js';
-	import Ellipsis from '@lucide/svelte/icons/ellipsis';
 	import Jobat from '$lib/components/icons/jobat.svelte';
 	import LogOut from '@lucide/svelte/icons/log-out';
 	import Moon from '@lucide/svelte/icons/moon';
@@ -13,8 +17,6 @@
 	import * as Tooltip from '$lib/components/ui/tooltip/index.js';
 	import User from '@lucide/svelte/icons/user';
 	import * as Popover from '$lib/components/ui/popover/index.js';
-	import { Calendar } from '$lib/components/ui/calendar/index.js';
-	import CalendarArrowDown from '@lucide/svelte/icons/calendar-arrow-down';
 	import ChartLine from '@lucide/svelte/icons/chart-line';
 	import Lightbulb from '@lucide/svelte/icons/lightbulb';
 	import * as Sidebar from '$lib/components/ui/sidebar/index.js';
@@ -24,9 +26,12 @@
 	import * as Form from '$lib/components/ui/form/index.js';
 	import { Input } from '$lib/components/ui/input/index.js';
 	import { IsMobile } from '$lib/hooks/is-mobile.svelte';
-	import PlusIcon from '@lucide/svelte/icons/plus';
-	import type { ApplicationForm } from './schema';
-	import CalendarArrowUp from '@lucide/svelte/icons/calendar-arrow-up';
+	import type { ApplicationForm } from './schema.js';
+	import type { DateRange } from 'bits-ui';
+	import { RangeCalendar } from '$lib/components/ui/range-calendar/index.js';
+	import CalendarRange from '@lucide/svelte/icons/calendar-range';
+	import SquarePen from '@lucide/svelte/icons/square-pen';
+	import ChevronsUpDown from '@lucide/svelte/icons/chevrons-up-down';
 
 	const items = [
 		{
@@ -50,41 +55,56 @@
 
 	const { form: formData, enhance } = form;
 
-	let startDate = $state<DateValue>(today(getLocalTimeZone()));
-	let endDate = $state<DateValue>(today(getLocalTimeZone()));
-
 	const df = new DateFormatter('en-US', {
-		dateStyle: 'long'
+		dateStyle: 'short'
 	});
+
+	const today = new Date();
+	const year = today.getFullYear();
+	const month = today.getMonth() + 1;
+	const day = today.getDate();
+
+	let value: DateRange = $state({
+		start: new CalendarDate(year, month, day).subtract({
+			days: 30
+		}),
+		end: new CalendarDate(year, month, day)
+	});
+
+	let startValue: DateValue | undefined = $state(undefined);
 
 	const sidebar = Sidebar.useSidebar();
 	const isOpen = $derived(sidebar.open);
 	const isMobile = new IsMobile().current;
+
+	const filter = $derived(
+		value.start && value.end
+			? `${df.format(value.start.toDate(getLocalTimeZone()))} - ${df.format(value.end.toDate(getLocalTimeZone()))}`
+			: 'Filter applications'
+	);
 </script>
 
-{#snippet trigger({ ...props })}
-	{#if sidebar.open}
-		<Button {...props} class="w-full">
-			<PlusIcon />
-			Add Application
-		</Button>
+{#snippet addApplicationTrigger({ ...props })}
+	{#if isOpen}
+		<Sidebar.MenuButton {...props}>
+			<SquarePen />
+			New application
+		</Sidebar.MenuButton>
 	{:else}
 		<Tooltip.Root>
 			<Tooltip.Trigger>
 				<Sidebar.MenuButton {...props}>
-					<PlusIcon />
-					Add Application
+					<SquarePen />
+					New application
 				</Sidebar.MenuButton>
 			</Tooltip.Trigger>
-			<Tooltip.Content side="right">
-				<p>Add Application</p>
-			</Tooltip.Content>
+			<Tooltip.Content side="right">New application</Tooltip.Content>
 		</Tooltip.Root>
 	{/if}
 {/snippet}
 
-{#snippet applicationForm()}
-	<form action="addApplication" use:enhance method="post">
+{#snippet addApplicationForm()}
+	<form action="addApplication" use:enhance method="post" class="grid gap-2">
 		<Form.Field {form} name="jobTitle">
 			<Form.Control>
 				{#snippet children({ props })}
@@ -102,7 +122,16 @@
 		<Form.Field {form} name="companyName">
 			<Form.Control>
 				{#snippet children({ props })}
-					<Form.Label>Company</Form.Label>
+					<Form.Label>Company Name</Form.Label>
+					<Input {...props} placeholder="JobAt" type="text" bind:value={$formData.companyName} />
+				{/snippet}
+			</Form.Control>
+			<Form.FieldErrors />
+		</Form.Field>
+		<Form.Field {form} name="submittedOn">
+			<Form.Control>
+				{#snippet children({ props })}
+					<Form.Label>Submitted On</Form.Label>
 					<Input {...props} placeholder="JobAt" type="text" bind:value={$formData.companyName} />
 				{/snippet}
 			</Form.Control>
@@ -117,78 +146,109 @@
 
 <Sidebar.Root collapsible="icon" class="bg-gradient-to-r">
 	<Sidebar.Header>
-		<Sidebar.Menu>
-			<Sidebar.MenuItem>
-				{#if sidebar.open}
-					<div class="flex justify-between">
-						<Button href="/" size="icon" variant="ghost">
-							<Jobat class="size-8" />
-						</Button>
-						<Tooltip.Root>
-							<Tooltip.Trigger>
-								{#snippet child({ props })}
-									<Button {...props} onclick={sidebar.toggle} size="icon" variant="ghost">
-										<PanelLeft />
-									</Button>
-								{/snippet}
-							</Tooltip.Trigger>
-							<Tooltip.Content side="right">Close Sidebar</Tooltip.Content>
-						</Tooltip.Root>
-					</div>
-				{:else}
-					<Tooltip.Root>
-						<Tooltip.Trigger>
-							{#snippet child({ props })}
-								<Sidebar.MenuButton {...props} onclick={sidebar.toggle} class="group/button">
-									<Jobat
-										class="size-8 scale-200 transition-transform group-hover/button:scale-0 group-hover/button:rotate-90"
-									/>
-									<PanelLeft
-										class="absolute scale-0 transition-transform group-hover/button:scale-100"
-									/>
-								</Sidebar.MenuButton>
-							{/snippet}
-						</Tooltip.Trigger>
-						<Tooltip.Content side="right">{sidebar.open ? 'Close' : 'Open'} Sidebar</Tooltip.Content
-						>
-					</Tooltip.Root>
-				{/if}
-			</Sidebar.MenuItem>
-		</Sidebar.Menu>
+		{#if isOpen}
+			<div class="flex justify-between">
+				<Button href="/" size="icon" variant="ghost">
+					<Jobat class="size-8" />
+				</Button>
+				<Tooltip.Root>
+					<Tooltip.Trigger>
+						{#snippet child({ props })}
+							<Button {...props} onclick={sidebar.toggle} size="icon" variant="ghost">
+								<PanelLeft />
+							</Button>
+						{/snippet}
+					</Tooltip.Trigger>
+					<Tooltip.Content side="right">Close Sidebar</Tooltip.Content>
+				</Tooltip.Root>
+			</div>
+		{:else}
+			<Tooltip.Root>
+				<Tooltip.Trigger>
+					{#snippet child({ props })}
+						<Sidebar.MenuButton {...props} onclick={sidebar.toggle} class="group/button">
+							<Jobat
+								class="size-8 scale-200 transition-transform group-hover/button:scale-0 group-hover/button:rotate-90"
+							/>
+							<PanelLeft
+								class="absolute scale-0 transition-transform group-hover/button:scale-100"
+							/>
+						</Sidebar.MenuButton>
+					{/snippet}
+				</Tooltip.Trigger>
+				<Tooltip.Content side="right">{isOpen ? 'Close' : 'Open'} Sidebar</Tooltip.Content>
+			</Tooltip.Root>
+		{/if}
 	</Sidebar.Header>
 	<Sidebar.Content>
 		<Sidebar.Group>
-			<Sidebar.GroupLabel>Applications</Sidebar.GroupLabel>
 			<Sidebar.GroupContent>
-				{#if isMobile}
-					<Drawer.Root>
-						<Drawer.Trigger>
-							{#snippet child({ props })}
-								{@render trigger(props)}
-							{/snippet}
-						</Drawer.Trigger>
-						<Drawer.Content>
-							<Drawer.Header>
-								<Drawer.Title>Add application</Drawer.Title>
-							</Drawer.Header>
-							{@render applicationForm()}
-						</Drawer.Content>
-					</Drawer.Root>
-				{:else}
-					<Dialog.Root>
-						<Dialog.Trigger>
-							{#snippet child({ props })}
-								{@render trigger(props)}
-							{/snippet}
-						</Dialog.Trigger>
-						<Dialog.Content>
-							<Dialog.Header>
-								<Dialog.Title>Add application</Dialog.Title>
-							</Dialog.Header>
-							{@render applicationForm()}
-						</Dialog.Content>
-					</Dialog.Root>
-				{/if}
+				<Sidebar.Menu>
+					<Sidebar.MenuItem>
+						{#if isMobile}
+							<Drawer.Root>
+								<Drawer.Trigger>
+									{#snippet child({ props })}
+										{@render addApplicationTrigger(props)}
+									{/snippet}
+								</Drawer.Trigger>
+								<Drawer.Content>
+									<Drawer.Header>
+										<Drawer.Title>Add Application</Drawer.Title>
+									</Drawer.Header>
+									{@render addApplicationForm()}
+								</Drawer.Content>
+							</Drawer.Root>
+						{:else}
+							<Dialog.Root>
+								<Dialog.Trigger>
+									{#snippet child({ props })}
+										{@render addApplicationTrigger(props)}
+									{/snippet}
+								</Dialog.Trigger>
+								<Dialog.Content>
+									<Dialog.Header>
+										<Dialog.Title>Add Application</Dialog.Title>
+									</Dialog.Header>
+									{@render addApplicationForm()}
+								</Dialog.Content>
+							</Dialog.Root>
+						{/if}
+					</Sidebar.MenuItem>
+					<Sidebar.MenuItem>
+						<Popover.Root>
+							<Popover.Trigger>
+								{#snippet child({ props })}
+									{#if isOpen}
+										<Sidebar.MenuButton {...props}>
+											<CalendarRange />
+											{filter}
+										</Sidebar.MenuButton>
+									{:else}
+										<Tooltip.Root>
+											<Tooltip.Trigger>
+												<Sidebar.MenuButton {...props}>
+													<CalendarRange />
+													{filter}
+												</Sidebar.MenuButton>
+											</Tooltip.Trigger>
+											<Tooltip.Content side="right">{filter}</Tooltip.Content>
+										</Tooltip.Root>
+									{/if}
+								{/snippet}
+							</Popover.Trigger>
+							<Popover.Content class="w-auto p-0" align="start">
+								<RangeCalendar
+									bind:value
+									onStartValueChange={(v) => {
+										startValue = v;
+									}}
+									numberOfMonths={2}
+								/>
+							</Popover.Content>
+						</Popover.Root>
+					</Sidebar.MenuItem>
+				</Sidebar.Menu>
 			</Sidebar.GroupContent>
 		</Sidebar.Group>
 		<Sidebar.Group>
@@ -199,10 +259,24 @@
 						<Sidebar.MenuItem>
 							<Sidebar.MenuButton>
 								{#snippet child({ props })}
-									<a {...props} href={item.url}>
-										<item.icon />
-										<span>{item.title}</span>
-									</a>
+									{#if isOpen}
+										<a {...props} href={item.url}>
+											<item.icon />
+											{item.title}
+										</a>
+									{:else}
+										<Tooltip.Root>
+											<Tooltip.Trigger {...props}>
+												{#snippet child({ props })}
+													<a {...props} href={item.url}>
+														<item.icon />
+														{item.title}
+													</a>
+												{/snippet}
+											</Tooltip.Trigger>
+											<Tooltip.Content side="right">{item.title}</Tooltip.Content>
+										</Tooltip.Root>
+									{/if}
 								{/snippet}
 							</Sidebar.MenuButton>
 						</Sidebar.MenuItem>
@@ -210,79 +284,19 @@
 				</Sidebar.Menu>
 			</Sidebar.GroupContent>
 		</Sidebar.Group>
-		<Sidebar.Group>
-			<Sidebar.GroupLabel>Start Date</Sidebar.GroupLabel>
-			<Sidebar.GroupContent>
-				<Popover.Root>
-					<Popover.Trigger>
-						{#snippet child({ props })}
-							{#if isOpen}
-								<Button {...props} variant="outline" class="w-full justify-start">
-									<CalendarArrowDown />
-									{df.format(startDate.toDate(getLocalTimeZone()))}
-								</Button>
-							{:else}
-								<Tooltip.Root>
-									<Tooltip.Trigger>
-										<Sidebar.MenuButton {...props}>
-											<CalendarArrowDown />
-											Start Date
-										</Sidebar.MenuButton>
-									</Tooltip.Trigger>
-									<Tooltip.Content side="right">Start Date</Tooltip.Content>
-								</Tooltip.Root>
-							{/if}
-						{/snippet}
-					</Popover.Trigger>
-					<Popover.Content class="w-auto p-0">
-						<Calendar type="single" bind:value={startDate} />
-					</Popover.Content>
-				</Popover.Root>
-			</Sidebar.GroupContent>
-		</Sidebar.Group>
-		<Sidebar.Group>
-			<Sidebar.GroupLabel>End Date</Sidebar.GroupLabel>
-			<Sidebar.GroupContent>
-				<Popover.Root>
-					<Popover.Trigger>
-						{#snippet child({ props })}
-							{#if isOpen}
-								<Button {...props} variant="outline" class="w-full justify-start">
-									<CalendarArrowUp />
-									{df.format(endDate.toDate(getLocalTimeZone()))}
-								</Button>
-							{:else}
-								<Tooltip.Root>
-									<Tooltip.Trigger>
-										<Sidebar.MenuButton {...props}>
-											<CalendarArrowUp />
-											End Date
-										</Sidebar.MenuButton>
-									</Tooltip.Trigger>
-									<Tooltip.Content side="right">End Date</Tooltip.Content>
-								</Tooltip.Root>
-							{/if}
-						{/snippet}
-					</Popover.Trigger>
-					<Popover.Content class="w-auto p-0">
-						<Calendar type="single" bind:value={endDate} />
-					</Popover.Content>
-				</Popover.Root>
-			</Sidebar.GroupContent>
-		</Sidebar.Group>
 	</Sidebar.Content>
 	<Sidebar.Footer>
 		<DropdownMenu.Root>
 			<DropdownMenu.Trigger>
 				{#snippet child({ props })}
-					<Sidebar.MenuButton {...props}>
+					<Sidebar.MenuButton {...props} size="lg">
 						<User />
 						Account
-						<Ellipsis class="ml-auto" />
+						<ChevronsUpDown class="ml-auto" />
 					</Sidebar.MenuButton>
 				{/snippet}
 			</DropdownMenu.Trigger>
-			<DropdownMenu.Content align="end" side="right">
+			<DropdownMenu.Content align="center" side="top">
 				<DropdownMenu.Group>
 					<DropdownMenu.Label>Account</DropdownMenu.Label>
 					<DropdownMenu.Separator />
@@ -295,8 +309,8 @@
 					</DropdownMenu.Item>
 					<DropdownMenu.Separator />
 					<DropdownMenu.Item
-						onclick={async () => {
-							await authClient.signOut();
+						onclick={() => {
+							authClient.signOut();
 						}}
 					>
 						<LogOut />
@@ -306,5 +320,5 @@
 			</DropdownMenu.Content>
 		</DropdownMenu.Root>
 	</Sidebar.Footer>
-	<Sidebar.Rail title={`${sidebar.open ? 'Close' : 'Open'} Sidebar`} />
+	<Sidebar.Rail title={`${isOpen ? 'Close' : 'Open'} Sidebar`} />
 </Sidebar.Root>
