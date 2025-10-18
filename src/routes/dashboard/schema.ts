@@ -1,23 +1,32 @@
 import type { SuperForm } from 'sveltekit-superforms';
 import { z } from 'zod/v4';
 
+const string = z.string().trim();
+
+const date = z.coerce
+	.date()
+	.min(new Date('1900-01-01'), { error: 'Date cannot be before 1900' })
+	.max(new Date(), { error: 'Date cannot be in the future' });
+
 export const applicationSchema = z.object({
-	jobTitle: z
-		.string()
-		.min(1, { message: 'Job title is too short (min 1 character)' })
-		.max(255, { message: 'Job title is too long (max 255 characters)' }),
-	companyName: z
-		.string()
-		.min(1, { message: 'Company name is too short (min 1 character)' })
-		.max(255, { message: 'Company name is too long (max 255 characters)' }),
-	submittedOn: z.date(),
-	assessmentReceivedOn: z.date().nullish(),
-	interviewReceivedOn: z.date().nullish(),
-	offerReceivedOn: z.date().nullish(),
-	offerAcceptedOn: z.date().nullish(),
-	rejectedOn: z.date().nullish(),
-	withdrawnOn: z.date().nullish(),
-	notes: z.string().max(2000, { message: 'Notes is too long (max 2000 characters)' }).nullish()
+	jobTitle: string
+		.min(1, { error: 'Job title is required' })
+		.max(255, { error: 'Job title is too long (max 255 characters)' }),
+	companyName: string
+		.min(1, { error: 'Company name is required' })
+		.max(255, { error: 'Company name is too long (max 255 characters)' }),
+	submittedOn: date.default(new Date()),
+	assessmentReceivedOn: date.optional(),
+	interviewReceivedOn: date.optional(),
+	offerReceivedOn: date.optional(),
+	offerAcceptedOn: date.optional(),
+	rejectedOn: date.optional(),
+	withdrawnOn: date.optional(),
+	notes: string.max(2000, { message: 'Notes is too long (max 2000 characters)' }).optional()
 });
 
-export type ApplicationForm = SuperForm<z.infer<typeof applicationSchema>, any>;
+type ApplicationSchema = z.infer<typeof applicationSchema>;
+
+export type ApplicationForm = SuperForm<ApplicationSchema, any>;
+
+export type ApplicationFormFieldName = keyof ApplicationSchema;

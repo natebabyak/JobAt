@@ -1,12 +1,7 @@
 <script lang="ts">
 	import { authClient } from '$lib/auth-client';
 	import { Button } from '$lib/components/ui/button/index.js';
-	import {
-		CalendarDate,
-		getLocalTimeZone,
-		DateFormatter,
-		type DateValue
-	} from '@internationalized/date';
+	import { CalendarDate, getLocalTimeZone, DateFormatter } from '@internationalized/date';
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu/index.js';
 	import Jobat from '$lib/components/icons/jobat.svelte';
 	import LogOut from '@lucide/svelte/icons/log-out';
@@ -16,7 +11,6 @@
 	import { toggleMode } from 'mode-watcher';
 	import * as Tooltip from '$lib/components/ui/tooltip/index.js';
 	import User from '@lucide/svelte/icons/user';
-	import * as Popover from '$lib/components/ui/popover/index.js';
 	import ChartLine from '@lucide/svelte/icons/chart-line';
 	import Lightbulb from '@lucide/svelte/icons/lightbulb';
 	import * as Sidebar from '$lib/components/ui/sidebar/index.js';
@@ -27,27 +21,25 @@
 	import { Input } from '$lib/components/ui/input/index.js';
 	import { IsMobile } from '$lib/hooks/is-mobile.svelte';
 	import type { ApplicationForm } from './schema.js';
-	import type { DateRange } from 'bits-ui';
-	import { RangeCalendar } from '$lib/components/ui/range-calendar/index.js';
-	import CalendarRange from '@lucide/svelte/icons/calendar-range';
 	import SquarePen from '@lucide/svelte/icons/square-pen';
 	import ChevronsUpDown from '@lucide/svelte/icons/chevrons-up-down';
+	import DateField from './date-field.svelte';
 
 	const items = [
 		{
-			url: '/dashboard#insights',
-			icon: Lightbulb,
-			title: 'Insights'
+			href: '/dashboard#insights',
+			Icon: Lightbulb,
+			label: 'Insights'
 		},
 		{
-			url: '/dashboard#charts',
-			icon: ChartLine,
-			title: 'Charts'
+			href: '/dashboard#charts',
+			Icon: ChartLine,
+			label: 'Charts'
 		},
 		{
-			url: '/dashboard#table',
-			icon: Table2,
-			title: 'Table'
+			href: '/dashboard#table',
+			Icon: Table2,
+			label: 'Table'
 		}
 	];
 
@@ -56,32 +48,12 @@
 	const { form: formData, enhance } = form;
 
 	const df = new DateFormatter('en-US', {
-		dateStyle: 'short'
+		dateStyle: 'long'
 	});
-
-	const today = new Date();
-	const year = today.getFullYear();
-	const month = today.getMonth() + 1;
-	const day = today.getDate();
-
-	let value: DateRange = $state({
-		start: new CalendarDate(year, month, day).subtract({
-			days: 30
-		}),
-		end: new CalendarDate(year, month, day)
-	});
-
-	let startValue: DateValue | undefined = $state(undefined);
 
 	const sidebar = Sidebar.useSidebar();
 	const isOpen = $derived(sidebar.open);
 	const isMobile = new IsMobile().current;
-
-	const filter = $derived(
-		value.start && value.end
-			? `${df.format(value.start.toDate(getLocalTimeZone()))} - ${df.format(value.end.toDate(getLocalTimeZone()))}`
-			: 'Filter applications'
-	);
 </script>
 
 {#snippet addApplicationTrigger({ ...props })}
@@ -128,15 +100,7 @@
 			</Form.Control>
 			<Form.FieldErrors />
 		</Form.Field>
-		<Form.Field {form} name="submittedOn">
-			<Form.Control>
-				{#snippet children({ props })}
-					<Form.Label>Submitted On</Form.Label>
-					<Input {...props} placeholder="JobAt" type="text" bind:value={$formData.companyName} />
-				{/snippet}
-			</Form.Control>
-			<Form.FieldErrors />
-		</Form.Field>
+		<DateField {form} label="Submitted On" name="submittedOn" />
 		<div class="flex gap-2">
 			<Form.Button>Submit</Form.Button>
 			<Form.Button variant="outline">Cancel</Form.Button>
@@ -215,39 +179,6 @@
 							</Dialog.Root>
 						{/if}
 					</Sidebar.MenuItem>
-					<Sidebar.MenuItem>
-						<Popover.Root>
-							<Popover.Trigger>
-								{#snippet child({ props })}
-									{#if isOpen}
-										<Sidebar.MenuButton {...props}>
-											<CalendarRange />
-											{filter}
-										</Sidebar.MenuButton>
-									{:else}
-										<Tooltip.Root>
-											<Tooltip.Trigger>
-												<Sidebar.MenuButton {...props}>
-													<CalendarRange />
-													{filter}
-												</Sidebar.MenuButton>
-											</Tooltip.Trigger>
-											<Tooltip.Content side="right">{filter}</Tooltip.Content>
-										</Tooltip.Root>
-									{/if}
-								{/snippet}
-							</Popover.Trigger>
-							<Popover.Content class="w-auto p-0" align="start">
-								<RangeCalendar
-									bind:value
-									onStartValueChange={(v) => {
-										startValue = v;
-									}}
-									numberOfMonths={2}
-								/>
-							</Popover.Content>
-						</Popover.Root>
-					</Sidebar.MenuItem>
 				</Sidebar.Menu>
 			</Sidebar.GroupContent>
 		</Sidebar.Group>
@@ -255,26 +186,26 @@
 			<Sidebar.GroupLabel>Navigation</Sidebar.GroupLabel>
 			<Sidebar.GroupContent>
 				<Sidebar.Menu>
-					{#each items as item}
+					{#each items as { href, Icon, label }}
 						<Sidebar.MenuItem>
 							<Sidebar.MenuButton>
 								{#snippet child({ props })}
 									{#if isOpen}
-										<a {...props} href={item.url}>
-											<item.icon />
-											{item.title}
+										<a {...props} {href}>
+											<Icon />
+											{label}
 										</a>
 									{:else}
 										<Tooltip.Root>
 											<Tooltip.Trigger {...props}>
 												{#snippet child({ props })}
-													<a {...props} href={item.url}>
-														<item.icon />
-														{item.title}
+													<a {...props} {href}>
+														<Icon />
+														{label}
 													</a>
 												{/snippet}
 											</Tooltip.Trigger>
-											<Tooltip.Content side="right">{item.title}</Tooltip.Content>
+											<Tooltip.Content side="right">{label}</Tooltip.Content>
 										</Tooltip.Root>
 									{/if}
 								{/snippet}
