@@ -1,17 +1,17 @@
 <script lang="ts">
-	import { applicationSchema } from './schema.js';
 	import * as Card from '$lib/components/ui/card/index.js';
 	import { columns } from './columns.js';
 	import type { PageProps } from './$types';
 	import * as Sidebar from '$lib/components/ui/sidebar/index.js';
-	import AppSidebar from './app-sidebar/app-sidebar.svelte';
+	import AppSidebar from './app-sidebar.svelte';
 	import DataTable from './data-table.svelte';
 	import { superForm } from 'sveltekit-superforms';
 	import { zod4 } from 'sveltekit-superforms/adapters';
+	import { applicationSchema } from './schema.js';
 
 	let { data }: PageProps = $props();
 
-	const form = superForm(data.applicationForm, {
+	const form = superForm(data.form, {
 		validators: zod4(applicationSchema)
 	});
 </script>

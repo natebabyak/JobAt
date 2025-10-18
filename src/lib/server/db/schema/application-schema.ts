@@ -6,8 +6,8 @@ export const application = pgTable('application', {
 	userId: text('user_id')
 		.notNull()
 		.references(() => user.id),
-	jobTitle: varchar('job_title').notNull(),
-	companyName: varchar('company_name').notNull(),
+	jobTitle: varchar('job_title', { length: 255 }).notNull(),
+	companyName: varchar('company_name', { length: 255 }).notNull(),
 	submittedOn: timestamp('submitted_on').notNull(),
 	assessmentReceivedOn: timestamp('assessment_received_on'),
 	interviewReceivedOn: timestamp('interview_received_on'),

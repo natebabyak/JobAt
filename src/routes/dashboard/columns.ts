@@ -1,9 +1,9 @@
 import { renderComponent } from '$lib/components/ui/data-table';
 import type { ColumnDef } from '@tanstack/table-core';
 import DataTableCheckbox from './data-table-checkbox.svelte';
-import type { ApplicationSchema } from './schema';
+import type { Schema } from './schema.js';
 
-export const columns: ColumnDef<ApplicationSchema>[] = [
+export const columns: ColumnDef<Schema>[] = [
 	{
 		id: 'select',
 		header: ({ table }) =>
@@ -23,16 +23,16 @@ export const columns: ColumnDef<ApplicationSchema>[] = [
 		enableHiding: false
 	},
 	{
-		accessorKey: 'position',
-		header: 'Position'
+		accessorKey: 'jobTitle',
+		header: 'Job Title'
 	},
 	{
-		accessorKey: 'company',
-		header: 'Company'
+		accessorKey: 'companyName',
+		header: 'Company Name'
 	},
 	{
-		accessorKey: 'status',
-		header: 'Status'
+		accessorKey: 'submittedOn',
+		header: 'Submitted On'
 	},
 	{
 		id: 'actions'
